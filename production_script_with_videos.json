@@ -1,0 +1,12 @@
+[
+  {
+    "scene_number": 1,
+    "start_time": 0.56,
+    "end_time": 12.5,
+    "location": "Dark Forest",
+    "visual_prompt": "Wide shot of a misty dark forest filled with towering ancient oak trees, shafts of light filtering through the branches as a group of three adventurers trudges cautiously along a narrow path. High fantasy style, 4k resolution.",
+    "narrative_summary": "The party begins their adventure in the woods.",
+    "stage_directions": "Wide shot of a misty dark forest, ancient oak trees loom over a narrow path. Shafts of light pierce through the thick canopy. The sounds of distant creatures can be faintly heard. Camera slowly pans down to reveal three adventurers cautiously moving forward, their expressions a mix of determination and trepidation. The atmosphere is tense, with the mysterious allure of the forest surrounding them.",
+    "character_actions": "The lead adventurer, a warrior clad in armor, checks the map with a furrowed brow. The second, a mage, casts a quick glance over their shoulder, eyes darting nervously. The third, a rogue, stealthily steps forward, testing the ground for traps. They all move with a mix of caution and excitement, fully aware of the dangers that lurk within.",
+    "final_video_prompt": "Create a cinematic scene set in a dark, misty forest with towering ancient oaks. Capture the cautious movements of three fantasy adventurers: a warrior, a mage, and a rogue. Highlight the tense atmosphere, shafts of light filtering through the trees, and a sense of adventure in a high-fidelity visual style.",
+    "video_url": 

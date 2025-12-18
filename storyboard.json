@@ -1,0 +1,60 @@
+{
+  "scenes": [
+    {
+      "scene_number": 1,
+      "start_time": 0.56,
+      "end_time": 12.5,
+      "location": "Dark Forest",
+      "visual_prompt": "Wide shot of a misty dark forest filled with towering ancient oak trees, shafts of light filtering through the branches as a group of three adventurers trudges cautiously along a narrow path. High fantasy style, 4k resolution.",
+      "narrative_summary": "The party begins their adventure in the woods."
+    },
+    {
+      "scene_number": 2,
+      "start_time": 124.38,
+      "end_time": 144.85,
+      "location": "Fantasy Tavern",
+      "visual_prompt": "Interior of a bustling fantasy tavern with wooden beams and flickering torches. A human fighter named Magnus sits at a rough-hewn table surrounded by paperwork, animatedly discussing character creation with two friends, their expressions filled with excitement and laughter. High fantasy ambiance, 4k resolution.",
+      "narrative_summary": "The players introduce their characters and discuss their roles."
+    },
+    {
+      "scene_number": 3,
+      "start_time": 265.97,
+      "end_time": 294.02,
+      "location": "Burnside Estate",
+      "visual_prompt": "Scene transitions to an old, cozy estate with rustic decor, as Magnus Burnside reflects on his background, the atmosphere filled with warmth and nostalgia. Inside, mugs of cider are shared among friends, laughter echoing against the wooden walls. High fantasy charm, 4k resolution.",
+      "narrative_summary": "Magnus's backstory and connection to the common folk is revealed."
+    },
+    {
+      "scene_number": 4,
+      "start_time": 700.96,
+      "end_time": 740.0,
+      "location": "Side of the Road",
+      "visual_prompt": "A dreary yet picturesque roadside scene dominated by two dead horses lying motionless in the dirt. The landscape is dotted with trees in the distance, as the party approaches with caution, their expressions shifting to concern and suspicion. 4k resolution.",
+      "narrative_summary": "The party discovers the dead horses and perceives danger."
+    },
+    {
+      "scene_number": 5,
+      "start_time": 1160.0,
+      "end_time": 1180.0,
+      "location": "Forest Clearing",
+      "visual_prompt": "Close-up of two goblins crouching in the shadows at the edge of a forest clearing, readying their weapons as they observe the approaching adventurers. The scene is tense, their eyes gleaming with mischief. High tension, 4k resolution.",
+      "narrative_summary": "The goblins prepare to attack the party."
+    },
+    {
+      "scene_number": 6,
+      "start_time": 1398.7,
+      "end_time": 1430.0,
+      "location": "Forest Ambush",
+      "visual_prompt": "Wide angle shot of the chaotic moment as the goblins leap from their hideout, weapons drawn, attacking the party with wild shouts. The adventurers react with surprise and determination, ready for battle amidst the forest backdrop. Intense action, 4k resolution.",
+      "narrative_summary": "The party engages in combat with the goblins."
+    },
+    {
+      "scene_number": 7,
+      "start_time": 2660.0,
+      "end_time": 2698.0,
+      "location": "Cave Entrance",
+      "visual_prompt": "Inside a dark, damp cave, adventurers stand at an entrance with a faintly glowing light illuminating a rugged path leading deeper inside. Shadows loom as echoes of distant voices reverberate, heightening the sense of danger and adventure. High fantasy mystery, 4k resolution.",
+      "narrative_summary": "The party prepares to enter the cave, sensing an unknown threat."
+    }
+  ]
+}
