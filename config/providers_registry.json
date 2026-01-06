@@ -1,0 +1,245 @@
+[
+	{
+		"id": "assemblyai",
+		"label": "AssemblyAI",
+		"stage": "transcription",
+		"type": "api",
+		"envKey": "ASSEMBLYAI_API_KEY",
+		"keyUrl": "https://www.assemblyai.com/dashboard/api-keys"
+	},
+	{
+		"id": "deepgram",
+		"label": "Deepgram",
+		"stage": "transcription",
+		"type": "api",
+		"envKey": "DEEPGRAM_API_KEY",
+		"keyUrl": "https://console.deepgram.com/"
+	},
+	{
+		"id": "revai",
+		"label": "Rev AI",
+		"stage": "transcription",
+		"type": "api",
+		"envKey": "REV_AI_API_KEY",
+		"keyUrl": "https://www.rev.ai/access_token"
+	},
+	{
+		"id": "google_cloud",
+		"label": "Google Cloud STT",
+		"stage": "transcription",
+		"type": "api",
+		"envKey": "GOOGLE_CLOUD_API_KEY",
+		"keyUrl": "https://console.cloud.google.com/apis/credentials",
+		"note": "Requires Google Cloud Speech-to-Text API enabled."
+	},
+	{
+		"id": "amazon_transcribe",
+		"label": "Amazon Transcribe",
+		"stage": "transcription",
+		"type": "api",
+		"envKey": "AWS_ACCESS_KEY_ID",
+		"keyUrl": "https://console.aws.amazon.com/iam/",
+		"note": "Also requires AWS_SECRET_ACCESS_KEY and AWS_REGION in .env."
+	},
+	{
+		"id": "whisper",
+		"label": "OpenAI Whisper (Local)",
+		"stage": "transcription",
+		"type": "local",
+		"envKey": null,
+		"keyUrl": null,
+		"note": "Runs locally via HuggingFace transformers."
+	},
+	{
+		"id": "whisperx",
+		"label": "WhisperX (Local)",
+		"stage": "transcription",
+		"type": "local",
+		"envKey": "HUGGING_FACE_TOKEN",
+		"keyUrl": "https://huggingface.co/settings/tokens",
+		"note": "Requires HF token to download PyAnnote speaker diarization models."
+	},
+	{
+		"id": "nemo",
+		"label": "NVIDIA NeMo (Local)",
+		"stage": "transcription",
+		"type": "local",
+		"envKey": null,
+		"keyUrl": null,
+		"note": "GPU required. Runs locally via nvidia-nemo toolkit."
+	},
+
+	{
+		"id": "openai",
+		"label": "OpenAI GPT",
+		"stage": "llm",
+		"type": "api",
+		"envKey": "OPENAI_API_KEY",
+		"keyUrl": "https://platform.openai.com/api-keys"
+	},
+	{
+		"id": "anthropic",
+		"label": "Anthropic Claude",
+		"stage": "llm",
+		"type": "api",
+		"envKey": "ANTHROPIC_API_KEY",
+		"keyUrl": "https://console.anthropic.com/settings/keys"
+	},
+	{
+		"id": "gemini",
+		"label": "Google Gemini",
+		"stage": "llm",
+		"type": "api",
+		"envKey": "GOOGLE_API_KEY",
+		"keyUrl": "https://aistudio.google.com/app/apikey"
+	},
+	{
+		"id": "deepseek",
+		"label": "Deepseek",
+		"stage": "llm",
+		"type": "api",
+		"envKey": "DEEPSEEK_API_KEY",
+		"keyUrl": "https://platform.deepseek.com/api_keys"
+	},
+	{
+		"id": "llama",
+		"label": "Llama (Ollama Local)",
+		"stage": "llm",
+		"type": "local",
+		"envKey": null,
+		"keyUrl": null,
+		"note": "Requires Ollama installed and running locally."
+	},
+	{
+		"id": "qwen",
+		"label": "Qwen (Ollama Local)",
+		"stage": "llm",
+		"type": "local",
+		"envKey": null,
+		"keyUrl": null,
+		"note": "Requires Ollama installed and running locally."
+	},
+	{
+		"id": "gemma",
+		"label": "Gemma (Ollama Local)",
+		"stage": "llm",
+		"type": "local",
+		"envKey": null,
+		"keyUrl": null,
+		"note": "Requires Ollama installed and running locally."
+	},
+	{
+		"id": "mistral",
+		"label": "Mistral (Ollama Local)",
+		"stage": "llm",
+		"type": "local",
+		"envKey": null,
+		"keyUrl": null,
+		"note": "Requires Ollama installed and running locally."
+	},
+	{
+		"id": "dolphin",
+		"label": "Dolphin Mixtral (Ollama Local)",
+		"stage": "llm",
+		"type": "local",
+		"envKey": null,
+		"keyUrl": null,
+		"note": "Requires Ollama installed and running locally."
+	},
+
+	{
+		"id": "luma",
+		"label": "Luma Dream Machine",
+		"stage": "video",
+		"type": "api",
+		"envKey": "LUMA_API_KEY",
+		"keyUrl": "https://lumalabs.ai/dream-machine/api/keys"
+	},
+	{
+		"id": "kling",
+		"label": "Kling AI",
+		"stage": "video",
+		"type": "api",
+		"envKey": "FAL_KEY",
+		"keyUrl": "https://fal.ai/dashboard/keys",
+		"note": "Provided via fal.ai platform."
+	},
+	{
+		"id": "runway",
+		"label": "Runway Gen-3/4",
+		"stage": "video",
+		"type": "api",
+		"envKey": "RUNWAY_API_KEY",
+		"keyUrl": "https://developer.runwayml.com/dashboard/api-keys"
+	},
+	{
+		"id": "pika",
+		"label": "Pika Labs",
+		"stage": "video",
+		"type": "api",
+		"envKey": "REPLICATE_API_TOKEN",
+		"keyUrl": "https://replicate.com/account/api-tokens",
+		"note": "Provided via Replicate platform."
+	},
+	{
+		"id": "minimax",
+		"label": "Hailuo Minimax",
+		"stage": "video",
+		"type": "api",
+		"envKey": "FAL_KEY",
+		"keyUrl": "https://fal.ai/dashboard/keys",
+		"note": "Provided via fal.ai platform."
+	},
+	{
+		"id": "hunyuan",
+		"label": "Hunyuan Video",
+		"stage": "video",
+		"type": "api",
+		"envKey": "REPLICATE_API_TOKEN",
+		"keyUrl": "https://replicate.com/account/api-tokens",
+		"note": "Provided via Replicate platform."
+	},
+	{
+		"id": "ltx",
+		"label": "LTX Video",
+		"stage": "video",
+		"type": "api",
+		"envKey": "REPLICATE_API_TOKEN",
+		"keyUrl": "https://replicate.com/account/api-tokens",
+		"note": "Provided via Replicate platform."
+	},
+	{
+		"id": "cogvideox",
+		"label": "CogVideoX",
+		"stage": "video",
+		"type": "api",
+		"envKey": "REPLICATE_API_TOKEN",
+		"keyUrl": "https://replicate.com/account/api-tokens",
+		"note": "Provided via Replicate platform."
+	},
+	{
+		"id": "mochi",
+		"label": "Genmo Mochi",
+		"stage": "video",
+		"type": "api",
+		"envKey": "REPLICATE_API_TOKEN",
+		"keyUrl": "https://replicate.com/account/api-tokens",
+		"note": "Provided via Replicate platform."
+	},
+	{
+		"id": "runware",
+		"label": "Runware Video",
+		"stage": "video",
+		"type": "api",
+		"envKey": "RUNWARE_API_KEY",
+		"keyUrl": "https://runware.ai/dashboard"
+	},
+	{
+		"id": "replicate",
+		"label": "Replicate (Pixverse)",
+		"stage": "video",
+		"type": "api",
+		"envKey": "REPLICATE_API_TOKEN",
+		"keyUrl": "https://replicate.com/account/api-tokens"
+	}
+]
