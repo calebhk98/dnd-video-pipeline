@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DND Video Pipeline</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar: active + past sessions -->
+        <aside id="history-sidebar" class="sidebar">
+            <!-- New Session button at top of sidebar -->
+            <div class="sidebar-top-action">
+                <button id="new-session-btn" class="primary-btn">+ New Session</button>
+            </div>
+
+            <!-- Active Sessions: jobs running in the background this browser session -->
+            <div class="sidebar-header">
+                <h2>Active Sessions</h2>
+            </div>
+            <div id="active-sessions-list" class="history-list">
+                <p class="sidebar-empty">No active sessions.</p>
+            </div>
+
+            <!-- Past Sessions: completed historical runs from the server -->
+            <div class="sidebar-header sidebar-header-secondary">
+                <h2>Past Sessions</h2>
+                <button id="refresh-history-btn" class="icon-btn" title="Refresh">&#x21bb;</button>
+            </div>
+            <div id="history-list" class="history-list">
+                <div class="skeleton-loader small">
+                    <div class="skeleton-bar"></div>
+                    <div class="skeleton-bar"></div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="app-container">
+            <header>
+                <div class="header-content">
+                    <div>
+                        <h1>DND Video Pipeline</h1>
+                        <p>Transform your session audio into epic videos.</p>
+                    </div>
+                    <!-- Settings gear icon button -->
+                    <button id="settings-btn" class="icon-btn" aria-label="Settings">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </button>
+                </div>
+            </header>
+
+            <main>
+                <!-- View 1: Upload -->
+                <section id="upload-view" class="view active">
+                    <div class="upload-zone" id="drop-zone">
+                        <p>Drag and drop your audio file here, or click to browse.</p>
+                        <input type="file" id="file-input" accept=".mp3,.wav,.m4a" hidden>
+                    </div>
+                    <div class="controls">
+                        <!-- Speaker count: number input; 0 means auto-detect -->
+                        <div class="speaker-row">
+                            <label for="speaker-count">Expected Speakers <span class="muted-text">(0 = auto-detect)</span></label>
+                            <input type="number" id="speaker-count" min="0" max="50" value="0">
+                        </div>
+
+                        <div class="model-selectors">
+                            <div class="control-group">
+                                <label for="transcriber-select">Step 1 – Transcription Model</label>
+                                <select id="transcriber-select">
+                                    <option value="assemblyai">AssemblyAI (recommended)</option>
+                                    <option value="deepgram">Deepgram (Nova-2)</option>
+                                    <option value="revai">Rev AI</option>
+                                    <option value="google_cloud">Google Cloud STT</option>
+                                    <option value="amazon_transcribe">Amazon Transcribe</option>
+                                    <option value="whisper">Whisper (local)</option>
+                                    <option value="whisperx">WhisperX (local, diarized)</option>
+                                    <option value="nemo">NVIDIA NeMo (local)</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label for="llm-select">Step 2 – LLM Model</label>
+                                <select id="llm-select">
+                                    <option value="anthropic">Anthropic Claude (recommended)</option>
+                                    <option value="openai">OpenAI GPT</option>
+                                    <option value="gemini">Google Gemini</option>
+                                    <option value="deepseek">Deepseek</option>
+                                    <option value="llama">Llama (Ollama local)</option>
+                                    <option value="qwen">Qwen (Ollama local)</option>
+                                    <option value="gemma">Gemma (Ollama local)</option>
+                                    <option value="mistral">Mistral (Ollama local)</option>
+                                    <option value="dolphin">Dolphin Mixtral (Ollama local)</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label for="video-select">Step 3 – Video Model</label>
+                                <select id="video-select">
+                                    <option value="luma">Luma Dream Machine (recommended)</option>
+                                    <option value="kling">Kling AI</option>
+                                    <option value="runway">Runway Gen-3/4</option>
+                                    <option value="pika">Pika Labs</option>
+                                    <option value="minimax">Minimax Hailuo</option>
+                                    <option value="hunyuan">Hunyuan Video</option>
+                                    <option value="ltx">LTX Video</option>
+                                    <option value="cogvideox">CogVideoX</option>
+                                    <option value="mochi">Genmo Mochi</option>
+                                    <option value="runware">Runware</option>
+                                    <option value="replicate">Replicate (Pixverse)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Auto-run toggle: skip manual review between stages -->
+                    <div class="autorun-row">
+                        <label class="toggle-label" for="auto-run-toggle">
+                            <input type="checkbox" id="auto-run-toggle">
+                            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                            Run all stages automatically
+                        </label>
+                        <p class="muted-text autorun-hint">Upload, select models, then walk away ,  the pipeline finishes on its own.</p>
+                    </div>
+                    <button id="upload-btn" class="primary-btn" disabled>Upload &amp; Process</button>
+                </section>
+
+                <!-- View 2: Phase-by-phase pipeline -->
+                <section id="pipeline-view" class="view hidden">
+                    <span id="pipeline-total-time" class="pipeline-total-time hidden"></span>
+
+                    <!-- Phase 1: Transcription -->
+                    <div class="phase" id="phase-1">
+                        <div class="phase-header">
+                            <div class="phase-badge" id="phase-1-badge">1</div>
+                            <h3>Stage 1 – Transcription</h3>
+                            <span class="phase-status" id="phase-1-status">Ready</span>
+                            <span class="phase-timer" id="phase-1-timer"></span>
+                        </div>
+                        <div class="phase-body">
+                            <!-- Start button shown before Stage 1 begins -->
+                            <div id="phase-1-start">
+                                <p class="muted-text" id="phase-1-filename"></p>
+                                <div class="control-group compact session-name-row">
+                                    <label for="session-name-input">Session Name</label>
+                                    <input type="text" id="session-name-input" placeholder="Enter a name for this session…">
+                                </div>
+                                <div class="pipeline-ai-selectors">
+                                    <div class="control-group compact">
+                                        <label for="pipeline-transcriber-select">Transcription Model</label>
+                                        <select id="pipeline-transcriber-select">
+                                            <option value="assemblyai">AssemblyAI</option>
+                                            <option value="deepgram">Deepgram (Nova-2)</option>
+                                            <option value="revai">Rev AI</option>
+                                            <option value="google_cloud">Google Cloud STT</option>
+                                            <option value="amazon_transcribe">Amazon Transcribe</option>
+                                            <option value="whisper">Whisper (local)</option>
+                                            <option value="whisperx">WhisperX (local, diarized)</option>
+                                            <option value="nemo">NVIDIA NeMo (local)</option>
+                                        </select>
+                                    </div>
+                                    <div class="control-group compact">
+                                        <label for="pipeline-llm-select">LLM Model</label>
+                                        <select id="pipeline-llm-select">
+                                            <option value="anthropic">Anthropic Claude</option>
+                                            <option value="openai">OpenAI GPT</option>
+                                            <option value="gemini">Google Gemini</option>
+                                            <option value="deepseek">Deepseek</option>
+                                            <option value="llama">Llama (Ollama local)</option>
+                                            <option value="qwen">Qwen (Ollama local)</option>
+                                            <option value="gemma">Gemma (Ollama local)</option>
+                                            <option value="mistral">Mistral (Ollama local)</option>
+                                            <option value="dolphin">Dolphin Mixtral (Ollama local)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Progress bar shown while Stage 1 runs -->
+                            <div class="phase-progress hidden" id="phase-1-progress">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="phase-1-bar" style="width:5%"></div>
+                                </div>
+                                <p class="muted-text" id="phase-1-detail">Transcribing audio…</p>
+                            </div>
+                            <!-- Sub-phase timers for Stage 1 -->
+                            <div class="sub-phase-timers" id="phase-1-sub-timers">
+                                <div class="sub-timer-row hidden" id="sub-timer-1-convert">
+                                    <span class="sub-timer-label">Convert to WAV</span>
+                                    <span class="sub-timer-value" id="sub-timer-1-convert-val">—</span>
+                                </div>
+                                <div class="sub-timer-row hidden" id="sub-timer-1-upload">
+                                    <span class="sub-timer-label">Upload to service</span>
+                                    <span class="sub-timer-value" id="sub-timer-1-upload-val">—</span>
+                                </div>
+                                <div class="sub-timer-row hidden" id="sub-timer-1-transcribe">
+                                    <span class="sub-timer-label">Transcription</span>
+                                    <span class="sub-timer-value" id="sub-timer-1-transcribe-val">—</span>
+                                </div>
+                            </div>
+                            <!-- Audio player shown as soon as WAV conversion completes -->
+                            <div class="hidden" id="converted-audio-container"></div>
+                            <!-- Results shown after Stage 1 completes -->
+                            <div class="phase-results hidden" id="phase-1-results">
+                                <div class="transcript-preview" id="transcript-container"></div>
+                                <div class="mapping-controls" id="mapping-controls"></div>
+                            </div>
+                            <!-- Stage 1 action row: primary button flanked by version nav arrows -->
+                            <div class="phase-nav-wrapper">
+                                <button id="prev-stage1-btn" class="nav-arrow-btn hidden">&#8592;</button>
+                                <div class="phase-nav-center">
+                                    <button id="start-stage1-btn" class="primary-btn">Start Transcription &#8594;</button>
+                                </div>
+                                <button id="next-stage1-btn" class="nav-arrow-btn hidden">&#8594;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2: LLM Processing (shown after Stage 1 completes) -->
+                    <div class="phase hidden" id="phase-2">
+                        <div class="phase-header">
+                            <div class="phase-badge" id="phase-2-badge">2</div>
+                            <h3>Stage 2 – LLM Processing</h3>
+                            <span class="phase-status" id="phase-2-status">Waiting…</span>
+                            <span class="phase-timer" id="phase-2-timer"></span>
+                        </div>
+                        <div class="phase-body">
+                            <!-- LLM selector shown before Stage 2 runs -->
+                            <div id="phase-2-start" class="phase-2-start-row">
+                                <div class="pipeline-ai-selectors">
+                                    <div class="control-group compact">
+                                        <label for="pipeline-stage2-llm-select">LLM Model</label>
+                                        <select id="pipeline-stage2-llm-select">
+                                            <option value="anthropic">Anthropic Claude</option>
+                                            <option value="openai">OpenAI GPT</option>
+                                            <option value="gemini">Google Gemini</option>
+                                            <option value="deepseek">Deepseek</option>
+                                            <option value="llama">Llama (Ollama local)</option>
+                                            <option value="qwen">Qwen (Ollama local)</option>
+                                            <option value="gemma">Gemma (Ollama local)</option>
+                                            <option value="mistral">Mistral (Ollama local)</option>
+                                            <option value="dolphin">Dolphin Mixtral (Ollama local)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="phase-progress hidden" id="phase-2-progress">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="phase-2-bar" style="width:5%"></div>
+                                </div>
+                                <p class="muted-text" id="phase-2-detail"></p>
+                            </div>
+                            <!-- Sub-phase timers for Stage 2 -->
+                            <div class="sub-phase-timers" id="phase-2-sub-timers">
+                                <div class="sub-timer-row hidden" id="sub-timer-2-speakers">
+                                    <span class="sub-timer-label">Speaker mapping</span>
+                                    <span class="sub-timer-value" id="sub-timer-2-speakers-val">—</span>
+                                </div>
+                                <div class="sub-timer-row hidden" id="sub-timer-2-viz">
+                                    <span class="sub-timer-label">Speaker visuals</span>
+                                    <span class="sub-timer-value" id="sub-timer-2-viz-val">—</span>
+                                </div>
+                                <div class="sub-timer-row hidden" id="sub-timer-2-relevance">
+                                    <span class="sub-timer-label">Relevance review</span>
+                                    <span class="sub-timer-value" id="sub-timer-2-relevance-val">—</span>
+                                </div>
+                                <div class="sub-timer-row hidden" id="sub-timer-2-storyboard">
+                                    <span class="sub-timer-label">Storyboard</span>
+                                    <span class="sub-timer-value" id="sub-timer-2-storyboard-val">—</span>
+                                </div>
+                                <div class="sub-timer-row hidden" id="sub-timer-2-production">
+                                    <span class="sub-timer-label">Production script</span>
+                                    <span class="sub-timer-value" id="sub-timer-2-production-val">—</span>
+                                </div>
+                            </div>
+                            <div class="phase-results hidden" id="phase-2-results">
+                                <!-- Speakers + character descriptions grouped together -->
+                                <div class="speakers-and-descriptions">
+                                    <div id="speaker-map-display"></div>
+                                    <div id="speaker-visualization-display"></div>
+                                </div>
+                                <div id="storyboard-display"></div>
+                            </div>
+                            <!-- Stage 2 action row: primary button flanked by version nav arrows -->
+                            <div class="phase-nav-wrapper">
+                                <button id="prev-stage2-btn" class="nav-arrow-btn hidden">&#8592;</button>
+                                <div class="phase-nav-center">
+                                    <button id="run-stage2-btn" class="primary-btn">Run LLM Stage &#8594;</button>
+                                </div>
+                                <button id="next-stage2-btn" class="nav-arrow-btn hidden">&#8594;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3: Video Generation (shown after Stage 2 completes) -->
+                    <div class="phase hidden" id="phase-3">
+                        <div class="phase-header">
+                            <div class="phase-badge" id="phase-3-badge">3</div>
+                            <h3>Stage 3 – Video Generation</h3>
+                            <span class="phase-status" id="phase-3-status">Waiting…</span>
+                            <span class="phase-timer" id="phase-3-timer"></span>
+                        </div>
+                        <div class="phase-body">
+                            <!-- Video model selector + generate button shown before Stage 3 runs -->
+                            <div id="phase-3-start">
+                                <div class="pipeline-ai-selectors">
+                                    <div class="control-group compact">
+                                        <label for="pipeline-video-select">Video Model</label>
+                                        <select id="pipeline-video-select">
+                                            <option value="luma">Luma Dream Machine</option>
+                                            <option value="kling">Kling AI</option>
+                                            <option value="runway">Runway Gen-3/4</option>
+                                            <option value="pika">Pika Labs</option>
+                                            <option value="minimax">Minimax Hailuo</option>
+                                            <option value="hunyuan">Hunyuan Video</option>
+                                            <option value="ltx">LTX Video</option>
+                                            <option value="cogvideox">CogVideoX</option>
+                                            <option value="mochi">Genmo Mochi</option>
+                                            <option value="runware">Runware</option>
+                                            <option value="replicate">Replicate (Pixverse)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="phase-progress hidden" id="phase-3-progress">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="phase-3-bar" style="width:5%"></div>
+                                </div>
+                                <p class="muted-text" id="phase-3-detail"></p>
+                            </div>
+                            <!-- Sub-phase timers for Stage 3 -->
+                            <div class="sub-phase-timers" id="phase-3-sub-timers">
+                                <div class="sub-timer-row hidden" id="sub-timer-3-scenes">
+                                    <span class="sub-timer-label">Scene generation</span>
+                                    <span class="sub-timer-value" id="sub-timer-3-scenes-val">—</span>
+                                </div>
+                            </div>
+                            <div class="phase-results hidden" id="phase-3-results">
+                                <div id="scene-videos-grid"></div>
+                            </div>
+                            <!-- Stage 3 action row: primary button flanked by version nav arrows -->
+                            <div class="phase-nav-wrapper">
+                                <button id="prev-stage3-btn" class="nav-arrow-btn hidden">&#8592;</button>
+                                <div class="phase-nav-center">
+                                    <button id="run-stage3-btn" class="primary-btn">Generate Videos &#8594;</button>
+                                </div>
+                                <button id="next-stage3-btn" class="nav-arrow-btn hidden">&#8594;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 4: Assembly (shown after Stage 3 completes) -->
+                    <div class="phase hidden" id="phase-4">
+                        <div class="phase-header">
+                            <div class="phase-badge" id="phase-4-badge">4</div>
+                            <h3>Stage 4 – Final Assembly</h3>
+                            <span class="phase-status" id="phase-4-status">Waiting…</span>
+                            <span class="phase-timer" id="phase-4-timer"></span>
+                        </div>
+                        <div class="phase-body">
+                            <div class="phase-progress hidden" id="phase-4-progress">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="phase-4-bar" style="width:5%"></div>
+                                </div>
+                                <p class="muted-text" id="phase-4-detail"></p>
+                            </div>
+                            <!-- Sub-phase timers for Stage 4 -->
+                            <div class="sub-phase-timers" id="phase-4-sub-timers">
+                                <div class="sub-timer-row hidden" id="sub-timer-4-stitch">
+                                    <span class="sub-timer-label">Stitch clips</span>
+                                    <span class="sub-timer-value" id="sub-timer-4-stitch-val">—</span>
+                                </div>
+                                <div class="sub-timer-row hidden" id="sub-timer-4-captions">
+                                    <span class="sub-timer-label">Add captions</span>
+                                    <span class="sub-timer-value" id="sub-timer-4-captions-val">—</span>
+                                </div>
+                                <div class="sub-timer-row hidden" id="sub-timer-4-audio">
+                                    <span class="sub-timer-label">Audio overlay</span>
+                                    <span class="sub-timer-value" id="sub-timer-4-audio-val">—</span>
+                                </div>
+                            </div>
+                            <div class="phase-results hidden" id="phase-4-results">
+                                <div id="final-video-container"></div>
+                            </div>
+                            <!-- Stage 4 action row: primary button flanked by version nav arrows -->
+                            <div class="phase-nav-wrapper">
+                                <button id="prev-stage4-btn" class="nav-arrow-btn hidden">&#8592;</button>
+                                <div class="phase-nav-center">
+                                    <button id="run-stage4-btn" class="primary-btn">Assemble Final Video &#8594;</button>
+                                </div>
+                                <button id="next-stage4-btn" class="nav-arrow-btn hidden">&#8594;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>API Keys</h2>
+                <!-- Clean close button ,  styled via .close-btn in CSS -->
+                <button id="close-settings-btn" class="close-btn" aria-label="Close settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body form-container" id="settings-form">
+                <!-- Populated dynamically by settings.js from modules/providers.js -->
+            </div>
+            <div class="modal-footer">
+                <button id="save-settings-btn" class="primary-btn">Save API Keys</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Entry point ,  loaded as an ES module so it can import sub-modules -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>

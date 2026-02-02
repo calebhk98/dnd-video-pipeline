@@ -1,0 +1,1451 @@
+/* ==========================================================================
+   Premium Glassmorphism & Dark Mode – DND Video Pipeline
+   ========================================================================== */
+
+/* ---------- CSS Custom Properties ---------- */
+:root {
+    --bg-color: #0d1117;
+    --text-color: #e6edf3;
+    --accent: #58a6ff;
+    --accent-hover: #3182ce;
+    --glass-bg: rgba(22, 27, 34, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* ---------- Base ---------- */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-color);
+    background-image: radial-gradient(circle at 50% -20%, #1f2937, var(--bg-color) 70%);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* ---------- Layout ---------- */
+.app-layout {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    gap: 2rem;
+    align-items: flex-start;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.app-container {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ==========================================================================
+   Sidebar – Past Sessions
+   ========================================================================== */
+.sidebar {
+    width: 300px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+}
+
+.sidebar-top-action {
+    padding: 1rem 1rem 0.5rem;
+}
+
+.sidebar-top-action .primary-btn {
+    width: 100%;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.5rem;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+/* Small icon-only button used in sidebar header and page header */
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 0;
+    width: auto;
+}
+.icon-btn:hover {
+    color: var(--accent);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.history-item {
+    background: rgba(255,255,255,0.05);
+    padding: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: var(--transition);
+}
+
+.history-item:hover, .history-item.active {
+    background: rgba(88, 166, 255, 0.1);
+    border-color: var(--accent);
+}
+
+.history-item-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.history-item-name {
+    margin: 0;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+}
+
+.active-session-name {
+    margin: 0;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+}
+
+/* Timestamp shown below session name */
+.history-timestamp {
+    margin: 0 0 0.4rem 0;
+    font-size: 0.72rem;
+    color: #8b949e;
+}
+
+/* Delete button for history items */
+.delete-session-btn {
+    background: none;
+    border: none;
+    color: #8b949e;
+    cursor: pointer;
+    padding: 0 0.1rem;
+    font-size: 0.8rem;
+    line-height: 1;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s;
+    flex-shrink: 0;
+    width: auto;
+}
+.history-item:hover .delete-session-btn {
+    opacity: 1;
+}
+.delete-session-btn:hover {
+    color: #f85149;
+}
+
+.history-item-meta {
+    font-size: 0.75rem;
+    color: #8b949e;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Small status badge inside a history item */
+.meta-badge {
+    background: rgba(255,255,255,0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+}
+.meta-badge.video {
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent);
+}
+
+/* Running badge – pulsing green for active sessions */
+.meta-badge.badge-running {
+    background: rgba(63, 185, 80, 0.15);
+    color: #3fb950;
+    animation: pulse-running 1.6s ease-in-out infinite;
+}
+@keyframes pulse-running {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+}
+
+/* Done / Error badges */
+.meta-badge.badge-done {
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent);
+}
+.meta-badge.badge-error {
+    background: rgba(248, 81, 73, 0.15);
+    color: #f85149;
+}
+
+/* Secondary sidebar section header (separates Active and Past sections) */
+.sidebar-header-secondary {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 0.75rem;
+}
+
+/* Empty-state text inside sidebar sections */
+.sidebar-empty {
+    color: #8b949e;
+    padding: 0.5rem 0;
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* Row of action buttons at the bottom of the pipeline view */
+.pipeline-actions-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    background: -webkit-linear-gradient(120deg, #58a6ff, #bc8bfa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p {
+    font-weight: 300;
+    color: #8b949e;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Views (animated transitions between Upload / Mapping / Loading / Results)
+   ========================================================================== */
+.view {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.view.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.view.hidden {
+    display: none;
+}
+
+/* ==========================================================================
+   View 1 – Upload Zone
+   ========================================================================== */
+.upload-zone {
+    background: var(--glass-bg);
+    border: 2px dashed var(--glass-border);
+    border-radius: 12px;
+    padding: 4rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: var(--transition);
+}
+
+.upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: rgba(88, 166, 255, 0.1);
+}
+
+/* Controls area below the drop zone */
+.controls {
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ---------- Speaker Count Row ----------
+   Compact inline row: label on the left, small number input on the right.
+   Replaces the previous full-width range slider for cleaner UX.           */
+.speaker-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.speaker-row label {
+    flex: 1;
+    font-size: 0.85rem;
+    color: #8b949e;
+    margin: 0;
+}
+
+.speaker-row input[type="number"] {
+    width: 70px;
+    background: rgba(13, 17, 23, 0.9);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.speaker-row input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* ---------- Model Selector Dropdowns ---------- */
+.model-selectors {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.control-group label {
+    font-size: 0.85rem;
+    color: #8b949e;
+}
+
+.control-group select {
+    background: rgba(22, 27, 34, 0.9);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    width: 100%;
+    cursor: pointer;
+    transition: var(--transition);
+    /* Custom dropdown arrow via inline SVG */
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b949e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    padding-right: 2rem;
+}
+
+.control-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* ---------- Pipeline AI Selectors ---------- */
+.pipeline-ai-selectors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+}
+
+.pipeline-ai-selectors .control-group {
+    flex: 1 1 160px;
+    min-width: 140px;
+}
+
+.pipeline-ai-selectors .control-group.compact label {
+    font-size: 0.8rem;
+}
+
+.pipeline-ai-selectors .control-group.compact select {
+    font-size: 0.85rem;
+    padding: 0.3rem 2rem 0.3rem 0.6rem;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+    font-size: 1rem;
+}
+
+.primary-btn {
+    background: var(--accent);
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.primary-btn:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+}
+
+.primary-btn:disabled {
+    background: #30363d;
+    color: #8b949e;
+    cursor: not-allowed;
+}
+
+.secondary-btn {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+}
+
+.secondary-btn:hover {
+    background: var(--glass-bg);
+}
+
+/* ==========================================================================
+   Settings Modal
+   ========================================================================== */
+
+/* Full-screen overlay that dims the background */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+/* Semi-transparent backdrop with blur */
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+/* The card that holds the form */
+.modal-content {
+    position: relative;
+    z-index: 1;
+    background: #161b22;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: min(480px, 90vw);
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Header row: title + close button */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+/* Footer row: save button */
+.modal-footer {
+    margin-top: 1.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* ---------- Close Button ----------
+   Override the global full-width `button` rule so this stays compact.   */
+.close-btn {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: #8b949e;
+    font-size: 1.4rem;
+    line-height: 1;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.close-btn:hover {
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Settings Form Layout ---------- */
+
+/* Vertical stack of form elements with consistent spacing */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Each label + input pair */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.input-group label {
+    font-size: 0.8rem;
+    color: #8b949e;
+}
+
+/* Uniform sizing for all API key password inputs */
+.input-group input[type="password"],
+.input-group input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(13, 17, 23, 0.9);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    transition: var(--transition);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* ---------- API Key Group Sections ----------
+   Groups related keys (transcription / LLM / video) with a coloured header
+   so users can see which stage each key belongs to.                        */
+.api-key-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Section title within an API key group */
+.api-key-group-title {
+    margin: 0.5rem 0 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    opacity: 0.85;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid rgba(88, 166, 255, 0.2);
+}
+
+/* Small inline note appended to a label (e.g. "(also used for Hailuo)") */
+.label-note {
+    font-weight: 400;
+    opacity: 0.6;
+    font-size: 0.75rem;
+}
+
+/* "Get key ↗" link shown inline inside each API key label */
+.key-link {
+    float: right;
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--accent);
+    text-decoration: none;
+    opacity: 0.75;
+    transition: opacity 0.2s ease;
+}
+.key-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   View 2 – Mapping View
+   ========================================================================== */
+.transcript-preview {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1rem;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(5px);
+}
+
+.transcript-line {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.transcript-line strong {
+    color: var(--accent);
+}
+
+.mapping-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.mapping-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+}
+
+.mapping-row input {
+    background: #0d1117;
+    border: 1px solid var(--glass-border);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.mapping-row input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* ==========================================================================
+   View 3 – Loading / Progress View
+   ========================================================================== */
+.muted-text {
+    color: #8b949e;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background: var(--glass-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 1rem;
+    border: 1px solid var(--glass-border);
+}
+
+/* Animated gradient fill that pulses while processing */
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #bc8bfa, #58a6ff);
+    transition: width 0.4s ease;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+    animation: bar-pulse 2s infinite;
+}
+
+@keyframes bar-pulse {
+    0%   { filter: brightness(1); }
+    50%  { filter: brightness(1.2); }
+    100% { filter: brightness(1); }
+}
+
+/* ==========================================================================
+   View 4 – Results View
+   ========================================================================== */
+.video-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+video {
+    width: 100%;
+    border-radius: 8px;
+    background: #000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* ==========================================================================
+   Skeleton Loader – shown while history is fetching
+   ========================================================================== */
+.skeleton-loader {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.skeleton-bar {
+    height: 20px;
+    background: linear-gradient(90deg, #161b22 25%, #21262d 50%, #161b22 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skeleton-loader.small { margin-top: 0; width: 100%; gap: 0.5rem; }
+.skeleton-loader.small .skeleton-bar { height: 60px; }
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ==========================================================================
+   Toast Notifications
+   ========================================================================== */
+
+/* Fixed container in the bottom-right corner */
+.toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Individual toast ,  starts invisible, slides in when .show is added */
+.toast {
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: #21262d;
+    border: 1px solid var(--glass-border);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    max-width: 320px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Colour-coded toast variants */
+.toast-success { border-color: #3fb950; color: #3fb950; }
+.toast-error   { border-color: #ff7b72; color: #ff7b72; }
+.toast-info    { border-color: var(--accent); color: var(--accent); }
+
+
+/* ==========================================================================
+   Pipeline View – Phase-by-phase progress
+   ========================================================================== */
+
+/* Each stage is a card in the pipeline view */
+.phase {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(8px);
+    transition: var(--transition);
+}
+
+/* Row with badge, title, and status text */
+.phase-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.phase-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    flex: 1;
+}
+
+/* Numbered circle badge */
+.phase-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+
+/* Running: accent colour + pulse animation */
+.phase-badge.running {
+    border-color: var(--accent);
+    color: var(--accent);
+    animation: badge-pulse 1.8s ease-in-out infinite;
+}
+
+/* Completed: green check */
+.phase-badge.done {
+    border-color: #3fb950;
+    color: #3fb950;
+    animation: none;
+}
+.phase-badge.done::after {
+    content: '✓';
+    font-size: 1rem;
+}
+.phase-badge.done { font-size: 0; } /* hide number when showing check */
+
+/* Error: red X */
+.phase-badge.error {
+    border-color: #ff7b72;
+    color: #ff7b72;
+    animation: none;
+}
+
+@keyframes badge-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.4); }
+    50%       { box-shadow: 0 0 0 6px rgba(88, 166, 255, 0); }
+}
+
+/* Status text (right of title) */
+.phase-status {
+    font-size: 0.8rem;
+    color: #8b949e;
+    white-space: nowrap;
+}
+
+/* Elapsed-time timer shown in each phase header */
+.phase-timer {
+    margin-left: auto;
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: #3fb950;
+    white-space: nowrap;
+    opacity: 0.9;
+}
+
+/* Total pipeline time shown below the action buttons */
+.pipeline-total-time {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: #8b949e;
+    align-self: center;
+}
+
+/* Sub-phase timer rows shown within each phase body */
+.sub-phase-timers {
+    margin: 6px 0 4px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sub-timer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #8b949e;
+    padding: 1px 2px;
+}
+
+.sub-timer-label {
+    opacity: 0.85;
+}
+
+.sub-timer-value {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: #c9d1d9;
+    min-width: 5ch;
+    text-align: right;
+}
+
+.sub-timer-row.running .sub-timer-value {
+    color: #3fb950;
+}
+
+.sub-timer-row.cached .sub-timer-value {
+    color: #8b949e;
+    font-style: italic;
+}
+
+/* Stage 2 LLM selector row shown before Stage 2 runs */
+.phase-2-start-row {
+    margin-bottom: 0.75rem;
+}
+
+/* Start panels for Stage 3 and Stage 4 (selector + action button shown before stage runs) */
+#phase-3-start,
+#phase-4-start {
+    margin-bottom: 0.75rem;
+}
+
+/* Speakers table + character descriptions grouped in one container */
+.speakers-and-descriptions {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Regenerate row: Regenerate button + version nav arrows */
+.regenerate-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--glass-border);
+    flex-wrap: wrap;
+}
+
+/* Re-run row: Re-run button + version nav arrows (stages 1, 3, 4) */
+.rerun-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--glass-border);
+    flex-wrap: wrap;
+}
+
+/* Phase nav wrapper: flanks the primary action button with ← → arrows */
+.phase-nav-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 0.5rem;
+}
+
+.phase-nav-center {
+    flex: 1;
+}
+
+/* Version navigation arrow buttons (← →) */
+.nav-arrow-btn {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    width: 50px;
+    flex-shrink: 0;
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    line-height: 1;
+    text-align: center;
+}
+
+.nav-arrow-btn:hover:not(:disabled) {
+    background: var(--glass-bg);
+    transform: translateY(-1px);
+}
+
+.nav-arrow-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Progress bar + detail text inside a phase */
+.phase-progress {
+    margin-top: 0.5rem;
+}
+
+/* Results area revealed after stage completes */
+.phase-results {
+    margin-top: 1rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1rem;
+}
+
+/* ==========================================================================
+   Stage 2 Results – Speaker map table
+   ========================================================================== */
+.speaker-map-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+}
+
+.speaker-map-table th {
+    text-align: left;
+    padding: 0.4rem 0.75rem;
+    color: #8b949e;
+    font-weight: 600;
+    border-bottom: 1px solid var(--glass-border);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.speaker-map-table td {
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.speaker-id {
+    color: #8b949e;
+    font-family: monospace;
+}
+
+.speaker-name {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Stage 2 Results – Speaker visualization cards
+   ========================================================================== */
+.speaker-viz-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.speaker-viz-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+}
+
+.speaker-viz-name {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    font-family: monospace;
+    margin-bottom: 0.15rem;
+}
+
+/* Character name from Stage 1 mapping shown under the speaker ID label */
+.speaker-viz-char-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e6edf3;
+    margin-bottom: 0.4rem;
+}
+
+.speaker-viz-textarea {
+    width: 100%;
+    background: #0d1117;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #e6edf3;
+    font-size: 0.875rem;
+    font-family: inherit;
+    padding: 0.5rem 0.6rem;
+    resize: vertical;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+}
+
+.speaker-viz-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.speaker-viz-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.speaker-viz-save-btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.75rem;
+}
+
+.speaker-viz-saved-msg {
+    font-size: 0.8rem;
+    color: #3fb950;
+}
+
+/* ==========================================================================
+   Stage 2 Results – Storyboard scene cards
+   ========================================================================== */
+.scene-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.scene-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.scene-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.scene-number {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.scene-time {
+    font-size: 0.75rem;
+    color: #8b949e;
+    font-family: monospace;
+}
+
+.scene-location {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.scene-summary {
+    font-size: 0.85rem;
+    color: #c9d1d9;
+    margin-bottom: 0.35rem;
+    line-height: 1.4;
+}
+
+.scene-prompt {
+    font-size: 0.78rem;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* Irrelevant (out-of-game) scene card — greyed out */
+.scene-card.irrelevant {
+    opacity: 0.4;
+    border-color: rgba(255, 255, 255, 0.05);
+}
+.scene-card.irrelevant .scene-number {
+    color: #8b949e;
+}
+
+.irrelevant-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #8b949e;
+    background: rgba(139, 148, 158, 0.12);
+    border: 1px solid rgba(139, 148, 158, 0.25);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: default;
+}
+
+/* Shot breakdown list under a scene card */
+.scene-shots {
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+.scene-shots-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.15rem;
+}
+.shot-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #c9d1d9;
+    padding-left: 0.4rem;
+    border-left: 2px solid rgba(88, 166, 255, 0.35);
+}
+.shot-number {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #58a6ff;
+    white-space: nowrap;
+    min-width: 3.5rem;
+}
+.shot-duration {
+    font-size: 0.7rem;
+    color: #8b949e;
+    font-family: monospace;
+    white-space: nowrap;
+}
+.shot-description {
+    line-height: 1.4;
+}
+
+/* Subtitle next to the Storyboard heading */
+.storyboard-subtitle {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #8b949e;
+}
+
+/* ==========================================================================
+   Scene video slot – inline video inside a storyboard scene card
+   ========================================================================== */
+.scene-video-slot {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.scene-video-slot .scene-video {
+    width: 100%;
+    border-radius: 6px;
+    background: #000;
+}
+
+/* ==========================================================================
+   Stage 3 Results – Scene video grid
+   ========================================================================== */
+.scene-video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.scene-video-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+.scene-video-item.failed {
+    border-color: rgba(255, 123, 114, 0.3);
+    opacity: 0.6;
+}
+
+.scene-video-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.scene-video {
+    width: 100%;
+    border-radius: 6px;
+    background: #000;
+}
+
+/* ==========================================================================
+   Stage 4 Results – Final video
+   ========================================================================== */
+.final-video {
+    width: 100%;
+    border-radius: 8px;
+    background: #000;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+    margin-top: 0.5rem;
+}
+
+/* ── Provider error banner ───────────────────────────────────────────────── */
+.provider-error-banner {
+    margin-top: 1.25rem;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid #ff7b72;
+    background: rgba(255, 123, 114, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.provider-error-detail {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #cdd9e5;
+    line-height: 1.5;
+}
+
+.provider-error-link {
+    font-size: 0.875rem;
+    color: #58a6ff;
+    text-decoration: none;
+}
+
+.provider-error-link:hover {
+    text-decoration: underline;
+}
+
+.provider-error-retry {
+    align-self: flex-start;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    border: 1px solid var(--glass-border);
+    background: #21262d;
+    color: #cdd9e5;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.provider-error-retry:hover {
+    background: #30363d;
+}
+
+/* ==========================================================================
+   Auto-run toggle – upload view
+   ========================================================================== */
+.autorun-row {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    user-select: none;
+}
+
+/* Hide the native checkbox */
+.toggle-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Custom pill track */
+.toggle-track {
+    position: relative;
+    width: 38px;
+    height: 22px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 11px;
+    flex-shrink: 0;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+/* Thumb dot */
+.toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    background: #8b949e;
+    border-radius: 50%;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+/* Checked state */
+.toggle-label input:checked ~ .toggle-track {
+    background: rgba(88, 166, 255, 0.25);
+    border-color: var(--accent);
+}
+.toggle-label input:checked ~ .toggle-track .toggle-thumb {
+    transform: translateX(16px);
+    background: var(--accent);
+}
+
+.autorun-hint {
+    margin: 0.4rem 0 0 0;
+    font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   Phase 1 – start button panel
+   ========================================================================== */
+#phase-1-start {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+#phase-1-filename {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #8b949e;
+    flex: 1;
+}
