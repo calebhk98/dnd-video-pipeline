@@ -1,0 +1,65 @@
+[
+	{
+		"group": "Transcription",
+		"providers": [
+			{ "id": "assemblyai-key", "label": "AssemblyAI", "envKey": "ASSEMBLYAI_API_KEY", "keyUrl": "https://www.assemblyai.com/dashboard/api-keys" },
+			{ "id": "deepgram-key", "label": "Deepgram", "envKey": "DEEPGRAM_API_KEY", "keyUrl": "https://console.deepgram.com/" },
+			{ "id": "revai-key", "label": "Rev AI", "envKey": "REV_AI_API_KEY", "keyUrl": "https://www.rev.ai/access_token" },
+			{ "id": "google-stt-key", "label": "Google Cloud STT", "envKey": "GOOGLE_CLOUD_API_KEY", "keyUrl": "https://console.cloud.google.com/apis/credentials" },
+			{ "id": "aws-key",        "label": "Amazon Transcribe (Access Key ID)",  "envKey": "AWS_ACCESS_KEY_ID",     "keyUrl": "https://console.aws.amazon.com/iam/" },
+			{ "id": "aws-secret-key", "label": "Amazon Transcribe (Secret Access Key)", "envKey": "AWS_SECRET_ACCESS_KEY", "keyUrl": "https://console.aws.amazon.com/iam/" },
+			{ "id": "aws-region",     "label": "Amazon Transcribe (Region)",            "envKey": "AWS_REGION",            "keyUrl": "https://console.aws.amazon.com/iam/", "type": "text" },
+			{ "id": "aws-s3-bucket",  "label": "Amazon Transcribe (S3 Bucket)",         "envKey": "AWS_S3_BUCKET",         "keyUrl": "https://console.aws.amazon.com/s3/",  "type": "text" },
+			{ "id": "hf-token", "label": "WhisperX (Local)", "envKey": "HUGGING_FACE_TOKEN", "keyUrl": "https://huggingface.co/settings/tokens" }
+		]
+	},
+	{
+		"group": "Language Models",
+		"providers": [
+			{ "id": "openai-key",   "label": "OpenAI GPT",       "envKey": "OPENAI_API_KEY",    "keyUrl": "https://platform.openai.com/api-keys" },
+			{ "id": "openai-model", "label": "OpenAI Model",     "envKey": "OPENAI_MODEL",      "type": "select", "options": [
+				{ "value": "gpt-4o",       "label": "GPT-4o (default)" },
+				{ "value": "gpt-4o-mini",  "label": "GPT-4o Mini (faster/cheaper)" },
+				{ "value": "gpt-4-turbo",  "label": "GPT-4 Turbo" },
+				{ "value": "o3-mini",      "label": "o3 Mini (reasoning)" }
+			]},
+			{ "id": "anthropic-key",   "label": "Anthropic Claude", "envKey": "ANTHROPIC_API_KEY", "keyUrl": "https://console.anthropic.com/settings/keys" },
+			{ "id": "anthropic-model", "label": "Claude Model",     "envKey": "ANTHROPIC_MODEL",   "type": "select", "options": [
+				{ "value": "claude-3-5-sonnet-latest", "label": "Claude 3.5 Sonnet (default)" },
+				{ "value": "claude-3-5-haiku-latest",  "label": "Claude 3.5 Haiku (faster/cheaper)" },
+				{ "value": "claude-opus-4-6",          "label": "Claude Opus 4.6 (most capable)" }
+			]},
+			{ "id": "gemini-key",   "label": "Google Gemini", "envKey": "GOOGLE_API_KEY",  "keyUrl": "https://aistudio.google.com/app/apikey" },
+			{ "id": "gemini-model", "label": "Gemini Model",  "envKey": "GEMINI_MODEL",    "type": "select", "options": [
+				{ "value": "gemini-2.0-flash-exp", "label": "Gemini 2.0 Flash (default)" },
+				{ "value": "gemini-2.0-pro-exp",   "label": "Gemini 2.0 Pro" },
+				{ "value": "gemini-1.5-pro",        "label": "Gemini 1.5 Pro" },
+				{ "value": "gemini-1.5-flash",      "label": "Gemini 1.5 Flash (faster)" }
+			]},
+			{ "id": "deepseek-key",   "label": "Deepseek",       "envKey": "DEEPSEEK_API_KEY", "keyUrl": "https://platform.deepseek.com/api_keys" },
+			{ "id": "deepseek-model", "label": "Deepseek Model", "envKey": "DEEPSEEK_MODEL",   "type": "select", "options": [
+				{ "value": "deepseek-chat",     "label": "DeepSeek Chat (default)" },
+				{ "value": "deepseek-reasoner", "label": "DeepSeek Reasoner (R1)" }
+			]}
+		]
+	},
+	{
+		"group": "Video Generation",
+		"providers": [
+			{ "id": "luma-key",   "label": "Luma Dream Machine", "envKey": "LUMA_API_KEY", "keyUrl": "https://lumalabs.ai/dream-machine/api/keys" },
+			{ "id": "luma-model", "label": "Luma Model",         "envKey": "LUMA_MODEL",   "type": "select", "options": [
+				{ "value": "ray-2",       "label": "Ray 2 (default)" },
+				{ "value": "ray-flash-2", "label": "Ray Flash 2 (faster)" },
+				{ "value": "ray-1-6",     "label": "Ray 1.6 (legacy)" }
+			]},
+			{ "id": "kling-key", "label": "Kling AI", "envKey": "FAL_KEY", "keyUrl": "https://fal.ai/dashboard/keys" },
+			{ "id": "runway-key",   "label": "Runway Gen-3/4", "envKey": "RUNWAY_API_KEY", "keyUrl": "https://dev.runwayml.com/" },
+			{ "id": "runway-model", "label": "Runway Model",   "envKey": "RUNWAY_MODEL",   "type": "select", "options": [
+				{ "value": "gen4_turbo",  "label": "Gen-4 Turbo (default)" },
+				{ "value": "gen3a_turbo", "label": "Gen-3 Alpha Turbo" }
+			]},
+			{ "id": "pika-key", "label": "Pika Labs", "envKey": "REPLICATE_API_TOKEN", "keyUrl": "https://replicate.com/account/api-tokens" },
+			{ "id": "runware-key", "label": "Runware Video", "envKey": "RUNWARE_API_KEY", "keyUrl": "https://runware.ai/api-keys" }
+		]
+	}
+]
