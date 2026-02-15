@@ -52,28 +52,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="DND-Video-Pipeline API", lifespan=lifespan)
 
-# ---------------------------------------------------------------------------
-# CORS middleware
-# ---------------------------------------------------------------------------
-# Parse allowed origins from the environment so the dev Vite server and
-# the production uvicorn server can both be whitelisted without code changes.
-_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:8500")
-ALLOWED_ORIGINS = [o.strip() for o in _origins_env.split(",") if o.strip()]
-
-app.add_middleware(
-	CORSMiddleware,
-	allow_origins=ALLOWED_ORIGINS,
-	allow_credentials=True,
-	allow_methods=["GET", "POST"],
-	allow_headers=["*"],
-)
-
-# ---------------------------------------------------------------------------
-# Routers
-# ---------------------------------------------------------------------------
-app.include_router(upload.router)
-app.include_router(settings.router)
-app.include_router(history.router)
 
 # ---------------------------------------------------------------------------
 # Static file mounts (must come last - the "/" mount catches everything else)
